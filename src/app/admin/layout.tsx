@@ -5,7 +5,7 @@ import { Layout, Dropdown, Menu, Avatar } from 'antd'
 import { UserOutlined, LockOutlined, LogoutOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
-import { logout } from '@/utils/auth'
+import { logout } from '@/lib/auth'
 
 const { Header, Content } = Layout
 
@@ -28,7 +28,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   const handleLogout = () => {
     logout()
-    router.push('/admin/login')
+    router.push('/login')
   }
 
   const handleChangePassword = () => {
@@ -51,7 +51,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     <Layout style={{ minHeight: '100vh' }}>
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
       <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
-        <Header style={{ background: '#fff', padding: '0 16px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <Header style={{
+          background: '#fff',
+          padding: '0 16px',
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          height: '50px', // 减小Header的高度
+          boxShadow: '0 1px 4px rgba(0, 21, 41, 0.08)' // 添加底部阴影作为分隔线
+        }}>
           <Dropdown overlay={menu} placement="bottomRight" arrow>
             <div style={{ cursor: 'pointer' }}>
               <Avatar icon={<UserOutlined />} />
@@ -59,7 +67,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           </Dropdown>
         </Header>
-        <Content style={{ margin: '24px 16px', padding: 24, minHeight: 280 }}>
+        <Content style={{
+          margin: '0 16px', // 移除顶部边距
+          padding: '16px', // 减小内边距
+          minHeight: 280
+        }}>
           {children}
         </Content>
       </Layout>

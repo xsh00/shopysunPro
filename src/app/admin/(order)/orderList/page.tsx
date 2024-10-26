@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { DatePicker, Select, Input, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 
@@ -48,7 +48,7 @@ const columns: ColumnsType<OrderData> = [
     title: '总金额',
     dataIndex: 'totalAmount',
     key: 'totalAmount',
-    render: (amount) => `¥${amount.toFixed(2)}`,
+    render: (amount) => `$${amount.toFixed(2)}`,
   },
 ]
 
@@ -67,7 +67,28 @@ const data: OrderData[] = [
 ]
 
 export default function OrderListPage() {
-  const [filteredData, setFilteredData] = useState(data)
+  const [filteredData, setFilteredData] = useState<OrderData[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchOrders()
+  }, [])
+
+  const fetchOrders = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/order')
+      if (!response.ok) {
+        throw new Error('获取订单数据失败')
+      }
+      const data = await response.json()
+      setFilteredData(data)
+    } catch (error) {
+      console.error('获取订单数据时出错:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleDateChange = (dates: unknown, dateStrings: [string, string]) => {
     // 实现日期筛选逻辑
@@ -122,7 +143,11 @@ export default function OrderListPage() {
           style={{ width: 200 }}
         />
       </div>
-      <Table columns={columns} dataSource={filteredData} />
+      <Table 
+        columns={columns} 
+        dataSource={filteredData} 
+        loading={loading}
+      />
     </>
   )
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { checkAuthStatus } from '@/utils/auth'
+import { checkAuthStatus } from '@/lib/auth'
 import { Card, Row, Col, List, Avatar } from 'antd'
 import {
   DollarCircleOutlined,
@@ -40,7 +40,7 @@ export default function AdminDashboard() {
       const isAuthenticated = await checkAuthStatus()
       if (!isAuthenticated) {
         console.log('用户未认证，重定向到登录页面')
-        router.push('/admin/login')
+        router.push('/login')
       } else {
         console.log('用户已认证，加载仪表板数据')
         // 模拟API调用
@@ -115,29 +115,32 @@ export default function AdminDashboard() {
         </Col>
       </Row>
 
-      <Card
-        title={
-          <span>
-            <FireOutlined style={{ marginRight: '8px', color: '#ff4d4f' }} />
-            热销产品
-          </span>
-        }
-        className="mt-6"
-      >
-        <List
-          itemLayout="horizontal"
-          dataSource={hotProducts}
-          renderItem={(item) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={<Avatar src={item.image} />}
-                title={item.name}
-                description={`销量：${item.sales}`}
-              />
-            </List.Item>
-          )}
-        />
-      </Card>
+      <Row gutter={[16, 16]} className="mt-6">
+        <Col span={24}>
+          <Card
+            title={
+              <span>
+                <FireOutlined style={{ marginRight: '8px', color: '#ff4d4f' }} />
+                热销产品
+              </span>
+            }
+          >
+            <List
+              itemLayout="horizontal"
+              dataSource={hotProducts}
+              renderItem={(item) => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={<Avatar src={item.image} size={64} />}
+                    title={<span className="text-lg">{item.name}</span>}
+                    description={<span className="text-base">销量：{item.sales}</span>}
+                  />
+                </List.Item>
+              )}
+            />
+          </Card>
+        </Col>
+      </Row>
     </>
   )
 }

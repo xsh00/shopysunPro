@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { checkAuthStatus } from '@/utils/auth'
+import { checkAuthStatus } from '@/lib/auth'
 
 export default function Home() {
   const router = useRouter()
@@ -13,7 +13,7 @@ export default function Home() {
       if (isAuthenticated) {
         router.push('/admin')
       } else {
-        router.push('/admin/login')
+        router.push('/login')
       }
     }
 
